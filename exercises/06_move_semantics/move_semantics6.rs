@@ -15,7 +15,8 @@ fn main() {
 
 // Should not take ownership
 fn get_char(data: &String) -> char {
-    data.chars().last().unwrap()
+    // auto dereferencing
+    data.chars().last().unwrap() // equals to (*data).chars().last().unwrap() (explict dereferencing)
 }
 
 // Should take ownership
