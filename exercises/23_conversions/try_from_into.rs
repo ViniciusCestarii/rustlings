@@ -27,8 +27,6 @@ enum IntoColorError {
     IntConversion,
 }
 
-// I AM NOT DONE
-
 // Your task is to complete this implementation and return an Ok result of inner
 // type Color. You need to create an implementation for a tuple of three
 // integers, an array of three integers, and a slice of integers.
@@ -37,17 +35,40 @@ enum IntoColorError {
 // time, but the slice implementation needs to check the slice length! Also note
 // that correct RGB color values must be integers in the 0..=255 range.
 
+const RGB_RANGE: std::ops::RangeInclusive<i16> = 0..=255;
+
 // Tuple implementation
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = IntoColorError;
     fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        let (red, green, blue) = tuple;
+
+        if !RGB_RANGE.contains(&red) || !RGB_RANGE.contains(&green) || !RGB_RANGE.contains(&blue) {
+            return Err(IntoColorError::IntConversion);
+        }
+
+        Ok(Color {
+            red: red as u8,
+            green: green as u8,
+            blue: blue as u8,
+        })
     }
 }
-
 // Array implementation
 impl TryFrom<[i16; 3]> for Color {
     type Error = IntoColorError;
     fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+        let [red, green, blue] = arr;
+
+        if !RGB_RANGE.contains(&red) || !RGB_RANGE.contains(&green) || !RGB_RANGE.contains(&blue) {
+            return Err(IntoColorError::IntConversion);
+        }
+
+        Ok(Color {
+            red: red as u8,
+            green: green as u8,
+            blue: blue as u8,
+        })
     }
 }
 
@@ -55,6 +76,17 @@ impl TryFrom<[i16; 3]> for Color {
 impl TryFrom<&[i16]> for Color {
     type Error = IntoColorError;
     fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+        let [red, green, blue] = slice else { return Err(IntoColorError::BadLen); };
+
+        if !RGB_RANGE.contains(red) || !RGB_RANGE.contains(green) || !RGB_RANGE.contains(blue) {
+            return Err(IntoColorError::IntConversion);
+        }
+
+        Ok(Color {
+            red: *red as u8,
+            green: *green as u8,
+            blue: *blue as u8,
+        })
     }
 }
 
